@@ -349,22 +349,76 @@ tbody tr:last-child td {
   
   .table-wrapper {
     margin-bottom: 1.5rem;
+    background: transparent;
+    border: none;
+    padding: 0;
+    max-height: none;
+    overflow-y: visible;
   }
 
-  th, td {
-    padding: 0.75rem 0.5rem;
-    font-size: 0.9rem;
+  table {
+    display: block;
+  }
+
+  thead {
+    display: none;
+  }
+
+  tbody, tr {
+    display: block;
+    width: 100%;
+  }
+
+  tr {
+    margin-bottom: 1rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+    padding: 0.5rem 1rem;
+  }
+
+  td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    font-size: 0.95rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    text-align: right;
+  }
+  
+  /* Centering states like 'Loading...' or 'Belum ada data' */
+  td[colSpan] {
+    justify-content: center;
+    text-align: center;
+  }
+
+  td:last-child {
+    border-bottom: none;
+  }
+
+  td[data-label]::before {
+    content: attr(data-label);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    text-align: left;
+    margin-right: 1rem;
   }
 
   .action-buttons {
-    flex-direction: column;
-    gap: 0.25rem;
+    flex-direction: row;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    flex: 1;
   }
 
   .btn-edit, .btn-delete {
-    width: 100%;
+    width: auto;
+    flex: 1;
     text-align: center;
-    padding: 0.4rem;
+    padding: 0.6rem;
   }
   
   .grand-total {
@@ -377,4 +431,66 @@ tbody tr:last-child td {
   .gradient-text {
     font-size: 1.6rem;
   }
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 2rem;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  text-align: center;
+}
+
+.modal-content h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.modal-content p {
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+  line-height: 1.5;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.btn-confirm {
+  background: var(--danger-color);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-confirm:hover {
+  background: var(--danger-hover);
+  transform: translateY(-2px);
 }

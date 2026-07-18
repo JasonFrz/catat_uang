@@ -64,6 +64,16 @@ app.post('/api/items', async (req, res) => {
   }
 });
 
+app.delete('/api/items', async (req, res) => {
+  try {
+    await pool.query('DELETE FROM transactions');
+    res.status(200).json({ message: 'All items deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting all items:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 app.delete('/api/items/:id', async (req, res) => {
   const { id } = req.params;
   try {

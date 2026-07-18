@@ -11,6 +11,7 @@ function App() {
   });
 
   const [editingId, setEditingId] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null); // 'all' or specific id
 
   const fetchItems = async () => {
     try {
@@ -77,9 +78,16 @@ function App() {
     }
   };
 
-  const handleDelete = async (id) => {
+  const promptDelete = (target) => {
+    setDeleteTarget(target);
+  };
+
+  const executeDelete = async () => {
+    if (!deleteTarget) return;
+
     try {
-      const response = await fetch(`/api/items/${id}`, {
+      const url = deleteTarget === 'all' ? '/api/items' : `/api/items/${deleteTarget}`;
+      const response = await fetch(url, {
         method: 'DELETE'
       });
       
@@ -87,7 +95,9 @@ function App() {
         fetchItems();
       }
     } catch (error) {
-      console.error('Error deleting item:', error);
+      console.error('Error deleting item(s):', error);
+    } finally {
+      setDeleteTarget(null);
     }
   };
 
@@ -189,17 +199,18 @@ function App() {
                 ) : (
                   items.map(item => (
                     <tr key={item.id}>
-                      <td>{item.nama_barang}</td>
-                      <td>{formatCurrency(item.harga)}</td>
-                      <td>{formatDate(item.created_at)}</td>
-                      <td>{item.qty}</td>
-                      <td className="font-bold">{formatCurrency(item.total)}</td>
-                      <td>
+                      <td data-label="Barang">{item.nama_barang}</td>
+                      <td data-label="Harga">{formatCurrency(item.harga)}</td>
+                      <td data-label="Tanggal">{formatDate(item.created_at)}</td>
+                      <td data-label="Qty">{item.qty}</td>
+                      <td data-label="Total" className="font-bold">{formatCurrency(item.total)}</td>
+                      <td data-label="Aksi">
                         <div className="action-buttons">
                           <button onClick={() => handleEdit(item)} className="btn-edit">
+
                             Edit
                           </button>
-                          <button onClick={() => handleDelete(item.id)} className="btn-delete">
+                          <button onClick={() => promptDelete(item.id)} className="btn-delete">
                             Hapus
                           </button>
                         </div>
@@ -211,12 +222,36 @@ function App() {
             </table>
           </div>
           
-          <div className="grand-total">
-            <h3>Total Pengeluaran:</h3>
-            <h2 className="gradient-text">{formatCurrency(grandTotal)}</h2>
+          <div className="grand-total-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px' }}>
+            <div className="grand-total" style={{ marginTop: '0' }}>
+              <h3>Total Pengeluaran:</h3>
+              <h2 className="gradient-text">{formatCurrency(grandTotal)}</h2>
+            </div>
+            {items.length > 0 && (
+              <button onClick={() => promptDelete('all')} className="btn-delete" style={{ padding: '12px 24px', fontSize: '1rem', fontWeight: 'bold' }}>
+                Hapus Semua
+              </button>
+            )}
           </div>
         </section>
       </div>
+
+      {deleteTarget && (
+        <div className="modal-overlay" onClick={() => setDeleteTarget(null)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <h3>Konfirmasi Hapus</h3>
+            <p>
+              {deleteTarget === 'all' 
+                ? 'Apakah Anda yakin ingin menghapus semua data transaksi?' 
+                : 'Apakah Anda yakin ingin menghapus item ini?'}
+            </p>
+            <div className="modal-actions">
+              <button onClick={() => setDeleteTarget(null)} className="btn-cancel">Batal</button>
+              <button onClick={executeDelete} className="btn-confirm">Ya, Hapus</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
