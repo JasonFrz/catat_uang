@@ -15,7 +15,8 @@ function App() {
 
   const fetchItems = async () => {
     try {
-      const response = await fetch('/api/items');
+      const baseUrl = import.meta.env.VITE_API_URL || '';
+      const response = await fetch(`${baseUrl}/api/items`);
       const data = await response.json();
       setItems(data);
     } catch (error) {
@@ -53,7 +54,8 @@ function App() {
     if (!form.nama_barang || !form.harga || !form.qty) return;
 
     try {
-      const url = editingId ? `/api/items/${editingId}` : '/api/items';
+      const baseUrl = import.meta.env.VITE_API_URL || '';
+      const url = editingId ? `${baseUrl}/api/items/${editingId}` : `${baseUrl}/api/items`;
       const method = editingId ? 'PUT' : 'POST';
 
       const response = await fetch(url, {
@@ -86,7 +88,8 @@ function App() {
     if (!deleteTarget) return;
 
     try {
-      const url = deleteTarget === 'all' ? '/api/items' : `/api/items/${deleteTarget}`;
+      const baseUrl = import.meta.env.VITE_API_URL || '';
+      const url = deleteTarget === 'all' ? `${baseUrl}/api/items` : `${baseUrl}/api/items/${deleteTarget}`;
       const response = await fetch(url, {
         method: 'DELETE'
       });
