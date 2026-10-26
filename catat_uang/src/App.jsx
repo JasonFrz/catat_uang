@@ -30,15 +30,24 @@ function App() {
     fetchItems();
   }, []);
 
+  const formatThousand = (value) => {
+    if (value === null || value === undefined || value === '') return '';
+    return value.toString().replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
+    if (name === 'harga') {
+      setForm(prev => ({ ...prev, [name]: formatThousand(value) }));
+      return;
+    }
     setForm(prev => ({ ...prev, [name]: value }));
   };
 
   const handleEdit = (item) => {
     setForm({
       nama_barang: item.nama_barang,
-      harga: item.harga,
+      harga: formatThousand(Math.round(Number(item.harga))),
       qty: item.qty
     });
     setEditingId(item.id);
@@ -65,7 +74,7 @@ function App() {
         },
         body: JSON.stringify({
           nama_barang: form.nama_barang,
-          harga: parseFloat(form.harga),
+          harga: parseFloat(form.harga.toString().replace(/\./g, '')),
           qty: parseInt(form.qty, 10)
         })
       });
@@ -140,12 +149,12 @@ function App() {
             <div className="input-group">
               <label>Harga (Rp)</label>
               <input 
-                type="number" 
+                type="text" 
+                inputMode="numeric"
                 name="harga" 
                 value={form.harga} 
                 onChange={handleChange} 
                 placeholder="0"
-                min="0"
                 required
               />
             </div>
