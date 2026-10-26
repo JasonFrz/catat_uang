@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import './index.css'; // We will use one unified CSS file
+import './index.css';
 
 function App() {
   const [items, setItems] = useState([]);
@@ -11,7 +11,7 @@ function App() {
   });
 
   const [editingId, setEditingId] = useState(null);
-  const [deleteTarget, setDeleteTarget] = useState(null); // 'all' or specific id
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   const fetchItems = async () => {
     try {
@@ -73,7 +73,7 @@ function App() {
       if (response.ok) {
         setForm({ nama_barang: '', harga: '', qty: '' });
         setEditingId(null);
-        fetchItems(); // Refresh list
+        fetchItems();
       }
     } catch (error) {
       console.error('Error saving item:', error);
@@ -104,15 +104,12 @@ function App() {
     }
   };
 
-  // Calculate grand total
   const grandTotal = items.reduce((sum, item) => sum + parseFloat(item.total), 0);
 
-  // Format currency
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(amount);
   };
 
-  // Format date
   const formatDate = (dateString) => {
     if (!dateString) return '-';
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -121,7 +118,7 @@ function App() {
 
   return (
     <div className="app-container">
-      <div className="glass-panel">
+      <div className="main-panel">
         <header>
           <h1>Catat Uang</h1>
           <p>Expense & Item Tracker</p>
@@ -166,11 +163,11 @@ function App() {
             </div>
             <div className="form-actions">
               <button type="submit" className="btn-add">
-                <span>{editingId ? 'Update' : 'Tambah'}</span>
+                {editingId ? 'Update' : 'Tambah'}
               </button>
               {editingId && (
                 <button type="button" onClick={cancelEdit} className="btn-cancel">
-                  <span>Batal</span>
+                  Batal
                 </button>
               )}
             </div>
@@ -210,7 +207,6 @@ function App() {
                       <td data-label="Aksi">
                         <div className="action-buttons">
                           <button onClick={() => handleEdit(item)} className="btn-edit">
-
                             Edit
                           </button>
                           <button onClick={() => promptDelete(item.id)} className="btn-delete">
@@ -225,13 +221,13 @@ function App() {
             </table>
           </div>
           
-          <div className="grand-total-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px' }}>
-            <div className="grand-total" style={{ marginTop: '0' }}>
+          <div className="grand-total-container">
+            <div className="grand-total">
               <h3>Total Pengeluaran:</h3>
-              <h2 className="gradient-text">{formatCurrency(grandTotal)}</h2>
+              <h2 className="total-amount">{formatCurrency(grandTotal)}</h2>
             </div>
             {items.length > 0 && (
-              <button onClick={() => promptDelete('all')} className="btn-delete" style={{ padding: '12px 24px', fontSize: '1rem', fontWeight: 'bold' }}>
+              <button onClick={() => promptDelete('all')} className="btn-delete-all">
                 Hapus Semua
               </button>
             )}
